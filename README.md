@@ -1,4 +1,4 @@
-# CSVXpressSmart 2026 + Trasporti
+# PROA
 
 **PWA offline-first** che unisce la gestione preventivi/ordini di CSVXpressSmart con il motore di calcolo costi trasporto di [Trasporti-Use-Friendly](https://www.alessandropezzali.it/Trasporti-Use-Friendly/).
 
@@ -9,7 +9,7 @@
 ## Struttura del progetto
 
 ```
-CSVXpressSmart_2026_tran/
+PROA/
 ├── index.html              ← App shell (4 tab)
 ├── manifest.json           ← PWA manifest
 ├── sw.js                   ← Service Worker (offline-first)
@@ -217,16 +217,16 @@ Dopo ogni modifica, bumpa la versione della cache in `sw.js` (costante `CACHE`) 
 ## Deploy
 
 ```bash
-# Crea il repo su GitHub: CSVXpressSmart_2026_tran
+# Crea il repo su GitHub: PROA
 git init
 git add .
-git commit -m "CSVXpressSmart 2026 + Trasporti v1.0.0"
-git remote add origin https://github.com/TUO_USER/CSVXpressSmart_2026_tran.git
+git commit -m "PROA v1.0.0"
+git remote add origin https://github.com/pezzaliapp/PROA.git
 git push -u origin main
 # Abilita GitHub Pages → Settings → Pages → /main root
 ```
 
-L'app sarà disponibile su `https://TUO_USER.github.io/CSVXpressSmart_2026_tran/`
+L'app sarà disponibile su `https://pezzaliapp.github.io/PROA/`
 
 ---
 

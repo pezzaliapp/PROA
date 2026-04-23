@@ -1,6 +1,6 @@
 {
-  "name": "CSVXpressSmart 2026 + Trasporti",
-  "short_name": "CSVXpress+Tran",
+  "name": "PROA",
+  "short_name": "PROA",
   "description": "Preventivi, disponibilità e calcolo costi trasporto automatico.",
   "start_url": "./index.html",
   "scope": "./",

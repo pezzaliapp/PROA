@@ -1,5 +1,5 @@
-// CSVXpressSmart 2026 + Trasporti — Service Worker v1.0.0
-const CACHE = 'csvxpress-tran-v1.0.0';
+// PROA — Service Worker v1.0.0
+const CACHE = 'proa-v1.0.0';
 const ASSETS = [
   './', './index.html', './css/style.css', './js/app.js', './manifest.json',
   './data/pallet_rates_by_region.json', './data/groupage_rates.json', './data/geo_provinces.json', './data/articles.json',
