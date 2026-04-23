@@ -18,7 +18,7 @@ import { initTrasportoUI } from './modules/trasporto.js';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('sw.js?v=1.1.0');
+      const reg = await navigator.serviceWorker.register('sw.js?v=1.2.0');
       await reg.update().catch(() => {});
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (sessionStorage.getItem('sw_r')) return;
