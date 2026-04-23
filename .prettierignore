@@ -1,0 +1,17 @@
+# Dati — JSON tariffe gestiti esternamente, non riformattare
+data/*.json
+
+# Asset binari
+icon/
+
+# Licenza
+LICENSE
+
+# Service Worker — la costante CACHE va bumpata manualmente
+sw.js
+
+# Dipendenze e output
+node_modules/
+coverage/
+dist/
+build/

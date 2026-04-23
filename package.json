@@ -1,0 +1,22 @@
+{
+  "name": "proa",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "PWA offline-first per preventivi commerciali e calcolo costi trasporto (PALLET + GROUPAGE).",
+  "author": "Alessandro Pezzali — PezzaliAPP",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "npx serve .",
+    "lint": "eslint js/",
+    "format": "prettier --write .",
+    "test": "echo \"test in Fase 3\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "prettier": "^3.8.3"
+  }
+}

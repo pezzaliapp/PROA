@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "serviceworker": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "script"
+  },
+  "rules": {
+    "strict": ["error", "global"],
+    "no-unused-vars": "warn",
+    "prefer-const": "error",
+    "eqeqeq": "error",
+    "no-var": "error"
+  }
+}
