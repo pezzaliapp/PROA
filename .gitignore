@@ -8,6 +8,7 @@ build/
 # Coverage
 coverage/
 .nyc_output/
+*.lcov
 
 # Log
 *.log

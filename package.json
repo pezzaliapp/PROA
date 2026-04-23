@@ -10,13 +10,18 @@
     "dev": "npx serve .",
     "lint": "eslint js/",
     "format": "prettier --write .",
-    "test": "echo \"test in Fase 3\""
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^8.57.1",
-    "prettier": "^3.8.3"
+    "jsdom": "^24.1.3",
+    "prettier": "^3.8.3",
+    "vitest": "^2.1.9"
   }
 }
