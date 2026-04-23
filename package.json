@@ -1,6 +1,6 @@
 {
   "name": "proa",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "PWA offline-first per preventivi commerciali e calcolo costi trasporto (PALLET + GROUPAGE).",
@@ -12,7 +12,10 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "sync:sw": "node scripts/sync-sw-version.js",
+    "sync:sw:check": "node scripts/sync-sw-version.js --check",
+    "version": "npm run sync:sw && git add sw.js js/main.js"
   },
   "engines": {
     "node": ">=20"

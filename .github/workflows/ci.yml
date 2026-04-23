@@ -36,6 +36,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Verify SW cache version in sync with package.json
+        run: npm run sync:sw:check
+
       - name: Test + coverage
         run: npm run test:coverage
 
