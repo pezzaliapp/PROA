@@ -195,11 +195,17 @@ function buildRow(a, idx) {
     fmtEur(r.differenza) +
     '</td>' +
     '<td data-col="azioni"><div class="azioni-wrap">' +
-    '<button class="btn-remove" data-idx="' +
+    '<button type="button" class="btn-remove" data-idx="' +
     idx +
-    '" title="Rimuovi">✕</button>' +
-    '<button class="btn-move btn-up" title="Su">↑</button>' +
-    '<button class="btn-move btn-down" title="Giù">↓</button>' +
+    '" title="Rimuovi riga" aria-label="Rimuovi riga ' +
+    (idx + 1) +
+    '">✕</button>' +
+    '<button type="button" class="btn-move btn-up" title="Sposta su" aria-label="Sposta riga ' +
+    (idx + 1) +
+    ' in su">↑</button>' +
+    '<button type="button" class="btn-move btn-down" title="Sposta giù" aria-label="Sposta riga ' +
+    (idx + 1) +
+    ' in giù">↓</button>' +
     '</div></td></tr>'
   );
 }

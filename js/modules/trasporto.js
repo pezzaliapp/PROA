@@ -909,11 +909,19 @@ function addTranToPreventivo() {
   updateEquivDiscount();
   salvaPreventivo();
   refreshTranLinkSelect();
-  // Switcha al tab preventivo
-  document.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'));
+  // Switcha al tab preventivo (mantiene aria-selected/tabindex coerenti)
+  document.querySelectorAll('.tab').forEach((b) => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+    b.setAttribute('tabindex', '-1');
+  });
   document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
   const tabPrev = document.querySelector('.tab[data-tab="preventivo"]');
-  if (tabPrev) tabPrev.classList.add('active');
+  if (tabPrev) {
+    tabPrev.classList.add('active');
+    tabPrev.setAttribute('aria-selected', 'true');
+    tabPrev.setAttribute('tabindex', '0');
+  }
   $id('tab-preventivo')?.classList.add('active');
   showToast('✅ Trasporto aggiunto al preventivo: ' + fmtEur(costCliente));
 }

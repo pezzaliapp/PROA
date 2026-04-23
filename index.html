@@ -78,15 +78,63 @@
     </header>
 
     <main>
-      <nav class="tabs" role="tablist">
-        <button class="tab active" data-tab="listino" role="tab">📋 Listino</button>
-        <button class="tab" data-tab="disponibilita" role="tab">📦 Disponib.</button>
-        <button class="tab" data-tab="preventivo" role="tab">🧾 Preventivo</button>
-        <button class="tab" data-tab="trasporto" role="tab">🚚 Trasporto</button>
+      <nav class="tabs" role="tablist" aria-label="Sezioni dell'app">
+        <button
+          class="tab active"
+          data-tab="listino"
+          role="tab"
+          aria-controls="tab-listino"
+          aria-selected="true"
+          id="tabbtn-listino"
+          type="button"
+        >
+          📋 Listino
+        </button>
+        <button
+          class="tab"
+          data-tab="disponibilita"
+          role="tab"
+          aria-controls="tab-disponibilita"
+          aria-selected="false"
+          id="tabbtn-disponibilita"
+          type="button"
+          tabindex="-1"
+        >
+          📦 Disponib.
+        </button>
+        <button
+          class="tab"
+          data-tab="preventivo"
+          role="tab"
+          aria-controls="tab-preventivo"
+          aria-selected="false"
+          id="tabbtn-preventivo"
+          type="button"
+          tabindex="-1"
+        >
+          🧾 Preventivo
+        </button>
+        <button
+          class="tab"
+          data-tab="trasporto"
+          role="tab"
+          aria-controls="tab-trasporto"
+          aria-selected="false"
+          id="tabbtn-trasporto"
+          type="button"
+          tabindex="-1"
+        >
+          🚚 Trasporto
+        </button>
       </nav>
 
       <!-- ══════════════ TAB LISTINO ══════════════ -->
-      <section id="tab-listino" class="tab-panel active">
+      <section
+        id="tab-listino"
+        class="tab-panel active"
+        role="tabpanel"
+        aria-labelledby="tabbtn-listino"
+      >
         <div class="card">
           <h2>📋 Listino Prezzi (CSV)</h2>
           <p class="muted">
@@ -117,7 +165,12 @@
       </section>
 
       <!-- ══════════════ TAB DISPONIBILITÀ ══════════════ -->
-      <section id="tab-disponibilita" class="tab-panel">
+      <section
+        id="tab-disponibilita"
+        class="tab-panel"
+        role="tabpanel"
+        aria-labelledby="tabbtn-disponibilita"
+      >
         <div class="card">
           <h2>📦 Situazione Settimanale (XLSX / CSV)</h2>
           <div class="upload-row">
@@ -146,8 +199,14 @@
         </div>
         <div class="card" id="dispFilters" style="display: none">
           <div class="filter-row">
-            <input type="text" id="searchDisp" placeholder="🔍 Cerca…" class="search-input" />
-            <select id="filterDisp" class="select-sm">
+            <input
+              type="text"
+              id="searchDisp"
+              placeholder="🔍 Cerca…"
+              class="search-input"
+              aria-label="Cerca nella disponibilità"
+            />
+            <select id="filterDisp" class="select-sm" aria-label="Filtra disponibilità">
               <option value="all">Tutti</option>
               <option value="available">✅ Disponibili</option>
               <option value="zero">⚠️ Esauriti</option>
@@ -182,7 +241,12 @@
       </section>
 
       <!-- ══════════════ TAB PREVENTIVO ══════════════ -->
-      <section id="tab-preventivo" class="tab-panel">
+      <section
+        id="tab-preventivo"
+        class="tab-panel"
+        role="tabpanel"
+        aria-labelledby="tabbtn-preventivo"
+      >
         <!-- Titolo -->
         <div class="card">
           <h2>🧾 Preventivo</h2>
@@ -207,8 +271,9 @@
               id="searchListino"
               placeholder="Cerca codice o descrizione…"
               class="search-input"
+              aria-label="Cerca nel listino"
             />
-            <select id="listinoSelect"></select>
+            <select id="listinoSelect" aria-label="Articolo da aggiungere al preventivo"></select>
             <button class="btn-primary" id="btnAddFromListino">➕ Aggiungi</button>
           </div>
           <p class="muted small" id="listinoCount"></p>
@@ -216,15 +281,33 @@
           <details class="manual-add">
             <summary>✏️ Aggiungi manualmente</summary>
             <div class="manual-form">
-              <input type="text" id="manCodice" placeholder="Codice" />
-              <input type="text" id="manDescrizione" placeholder="Descrizione" />
-              <input type="text" id="manPrezzo" placeholder="Prezzo lordo €" inputmode="decimal" />
-              <input type="text" id="manTrasporto" placeholder="Trasporto €" inputmode="decimal" />
+              <input type="text" id="manCodice" placeholder="Codice" aria-label="Codice articolo" />
+              <input
+                type="text"
+                id="manDescrizione"
+                placeholder="Descrizione"
+                aria-label="Descrizione articolo"
+              />
+              <input
+                type="text"
+                id="manPrezzo"
+                placeholder="Prezzo lordo €"
+                inputmode="decimal"
+                aria-label="Prezzo lordo in euro"
+              />
+              <input
+                type="text"
+                id="manTrasporto"
+                placeholder="Trasporto €"
+                inputmode="decimal"
+                aria-label="Costo trasporto in euro"
+              />
               <input
                 type="text"
                 id="manInstallazione"
                 placeholder="Installazione €"
                 inputmode="decimal"
+                aria-label="Costo installazione in euro"
               />
               <button class="btn-sm" id="btnAddManual">➕ Aggiungi</button>
             </div>
@@ -318,7 +401,12 @@
       </section>
 
       <!-- ══════════════ TAB TRASPORTO ══════════════ -->
-      <section id="tab-trasporto" class="tab-panel">
+      <section
+        id="tab-trasporto"
+        class="tab-panel"
+        role="tabpanel"
+        aria-labelledby="tabbtn-trasporto"
+      >
         <div class="card tran-info-card">
           <h2>🚚 Calcolo Costo Trasporto</h2>
           <p class="muted">
@@ -440,7 +528,7 @@
             <!-- Singolo -->
             <div id="tranSingleSection">
               <div class="tran-link-row">
-                <select id="tranLinkArticle">
+                <select id="tranLinkArticle" aria-label="Articolo dal preventivo da collegare">
                   <option value="">— Seleziona articolo dal preventivo —</option>
                 </select>
                 <button class="btn-sm" id="btnTranApplyArticle">🔄 Ricarica dati articolo</button>
