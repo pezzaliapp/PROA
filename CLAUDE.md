@@ -14,6 +14,7 @@ Memoria persistente del progetto per Claude Code. **Leggi questo file integralme
 **Cosa fa l'app**: PWA offline-first per la gestione di preventivi commerciali e il calcolo automatico dei costi di trasporto (PALLET e GROUPAGE) su tutto il territorio italiano. Unisce in un'unica app quotazione cliente + logistica.
 
 **Tab principali**:
+
 1. **Listino** — caricamento CSV prezzi con persistenza IndexedDB
 2. **Disponibilità** — caricamento XLSX/CSV situazione settimanale
 3. **Preventivo** — composizione offerta con sconti, IVA, export WhatsApp/TXT
@@ -85,6 +86,7 @@ Lo stato **di partenza** era monolitico (tutto il JS in `js/app.js`, 1413 righe)
 ## 4. Schema dei dati
 
 ### `data/pallet_rates_by_region.json`
+
 ```json
 {
   "meta": {
@@ -101,6 +103,7 @@ Lo stato **di partenza** era monolitico (tutto il JS in `js/app.js`, 1413 righe)
 ```
 
 ### `data/groupage_rates.json`
+
 ```json
 {
   "meta": {
@@ -124,7 +127,9 @@ Lo stato **di partenza** era monolitico (tutto il JS in `js/app.js`, 1413 righe)
 ```
 
 ### `data/articles.json`
+
 Array di articoli con regole di spedizione automatiche:
+
 ```json
 {
   "code": "FT 600 HY",
@@ -142,12 +147,15 @@ Array di articoli con regole di spedizione automatiche:
 ```
 
 ### `data/geo_provinces.json`
+
 Mappa regione → array di sigle provincia, usata per popolare la select Province.
 
 ### Formato CSV listino atteso
+
 ```
 Codice;Descrizione;PrezzoLordo;CostoTrasporto;CostoInstallazione[;PalletType]
 ```
+
 Separatore `;` o `,` auto-rilevato. Encoding UTF-8 con BOM supportato. Header case-insensitive.
 
 ---
@@ -217,21 +225,27 @@ git log --oneline -10
 Ogni fase deve essere completata e committata prima di passare alla successiva. Commit piccoli e descrittivi (Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`).
 
 ### Fase 1 — Fondamenta
+
 `package.json`, `.gitignore`, `.editorconfig`, `.nvmrc`, ESLint, Prettier, formattazione iniziale.
 
 ### Fase 2 — Modularizzazione `app.js`
+
 Split in moduli ES6 come descritto in §3. `<script type="module">` in `index.html`. Aggiornare `sw.js` e bumpare `CACHE`. Nessun cambio di comportamento.
 
 ### Fase 3 — Testing
+
 Vitest + jsdom. Coverage >70% sulla logica business (parser CSV, motore trasporto PALLET e GROUPAGE, calcolo sconti).
 
 ### Fase 4 — CI/CD
+
 `.github/workflows/ci.yml`: lint + test + deploy automatico su GitHub Pages. Badge CI e coverage nel README.
 
 ### Fase 5 — Robustezza PWA
+
 Service Worker con stale-while-revalidate per i JSON. Banner update. Script build che bumpa `CACHE` automaticamente da `package.json`.
 
 ### Fase 6 — Qualità e accessibilità
+
 Audit axe-core, aria-label, focus tastiera. Lighthouse >90 su tutte e 4 le metriche. Meta Open Graph + Twitter Card. Zero warning console.
 
 ---
@@ -255,4 +269,4 @@ Se un task sembra richiedere una violazione delle regole di questo file (es. "ag
 
 ---
 
-*Ultimo aggiornamento: compilato sulla base del codice sorgente di CSVXpressSmart_2026_tran v1.0.0 al momento della migrazione a PROA.*
+_Ultimo aggiornamento: compilato sulla base del codice sorgente di CSVXpressSmart_2026_tran v1.0.0 al momento della migrazione a PROA._

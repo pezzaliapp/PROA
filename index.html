@@ -1,397 +1,482 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it" data-app="PROA" data-ver="1.0.0">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>PROA</title>
-  <link rel="manifest" href="manifest.json"/>
-  <meta name="theme-color" content="#1565c0"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-  <link rel="apple-touch-icon" href="icon/icon-192.png"/>
-  <link rel="stylesheet" href="css/style.css"/>
-</head>
-<body>
-
-<header>
-  <div class="header-inner">
-    <div class="logo-wrap">
-      <img src="icon/icon-192.png" alt="Logo" class="logo" onerror="this.style.display='none'"/>
-      <div>
-        <h1>PROA</h1>
-        <p class="tagline">Preventivi · Ordini · Costi Trasporto</p>
-      </div>
-    </div>
-    <button class="btn-icon" id="btnTheme" title="Tema" aria-label="Cambia tema">🌙</button>
-  </div>
-</header>
-
-<main>
-
-  <nav class="tabs" role="tablist">
-    <button class="tab active" data-tab="listino"       role="tab">📋 Listino</button>
-    <button class="tab"        data-tab="disponibilita" role="tab">📦 Disponib.</button>
-    <button class="tab"        data-tab="preventivo"    role="tab">🧾 Preventivo</button>
-    <button class="tab"        data-tab="trasporto"     role="tab">🚚 Trasporto</button>
-  </nav>
-
-  <!-- ══════════════ TAB LISTINO ══════════════ -->
-  <section id="tab-listino" class="tab-panel active">
-    <div class="card">
-      <h2>📋 Listino Prezzi (CSV)</h2>
-      <p class="muted">Colonne: <code>Codice;Descrizione;PrezzoLordo;CostoTrasporto;CostoInstallazione</code></p>
-      <div class="upload-row">
-        <label class="upload-btn" for="csvFileInput">
-          📂 Seleziona CSV
-          <input type="file" id="csvFileInput" accept=".csv,.txt" style="display:none"/>
-        </label>
-        <span id="csvFileName" class="muted small">Nessun file</span>
-      </div>
-      <p id="csvError" class="error" style="display:none"></p>
-      <div class="memory-bar">
-        <label class="toggle-label"><input type="checkbox" id="toggleRememberCSV" checked/> Ricorda listino</label>
-        <div class="btn-row">
-          <button class="btn-sm" id="btnLoadSavedCSV">⬆️ Carica salvato</button>
-          <button class="btn-sm btn-danger" id="btnClearSavedCSV">🗑️ Cancella</button>
-        </div>
-        <p id="savedCsvInfo" class="muted small">Nessun listino salvato.</p>
-      </div>
-      <div id="listinoStats" class="stats-bar" style="display:none">
-        <span id="statArticoli">0 articoli</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════ TAB DISPONIBILITÀ ══════════════ -->
-  <section id="tab-disponibilita" class="tab-panel">
-    <div class="card">
-      <h2>📦 Situazione Settimanale (XLSX / CSV)</h2>
-      <div class="upload-row">
-        <label class="upload-btn" for="xlsxFileInput">
-          📂 Seleziona XLSX / CSV
-          <input type="file" id="xlsxFileInput" accept=".xlsx,.xls,.csv" style="display:none"/>
-        </label>
-        <span id="xlsxFileName" class="muted small">Nessun file</span>
-      </div>
-      <div class="memory-bar">
-        <label class="toggle-label"><input type="checkbox" id="toggleRememberXLSX" checked/> Ricorda situazione</label>
-        <div class="btn-row">
-          <button class="btn-sm" id="btnLoadSavedXLSX">⬆️ Carica salvata</button>
-          <button class="btn-sm btn-danger" id="btnClearSavedXLSX">🗑️ Cancella</button>
-        </div>
-        <p id="savedXlsxInfo" class="muted small">Nessuna situazione salvata.</p>
-      </div>
-      <p id="xlsxError" class="error" style="display:none">❌ Errore caricamento.</p>
-    </div>
-    <div class="card" id="dispFilters" style="display:none">
-      <div class="filter-row">
-        <input type="text" id="searchDisp" placeholder="🔍 Cerca…" class="search-input"/>
-        <select id="filterDisp" class="select-sm">
-          <option value="all">Tutti</option>
-          <option value="available">✅ Disponibili</option>
-          <option value="zero">⚠️ Esauriti</option>
-          <option value="arriving">🚚 In arrivo</option>
-          <option value="noted">📝 Con note</option>
-        </select>
-        <button class="btn-sm" id="btnExportDisp">📥 Esporta CSV</button>
-      </div>
-      <p class="muted small" id="dispCount"></p>
-    </div>
-    <div class="card table-card" id="dispTableWrap" style="display:none">
-      <div class="table-scroll">
-        <table id="dispTable">
-          <thead><tr>
-            <th>Codice</th><th>Descrizione</th>
-            <th class="num">Disp.</th><th class="num">S15</th><th class="num">S18</th>
-            <th class="num">Maggio</th><th class="num">Giugno</th>
-            <th>Note</th><th>Prenotazioni</th><th>Info</th>
-          </tr></thead>
-          <tbody id="dispBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════ TAB PREVENTIVO ══════════════ -->
-  <section id="tab-preventivo" class="tab-panel">
-
-    <!-- Titolo -->
-    <div class="card">
-      <h2>🧾 Preventivo</h2>
-      <div class="titolo-row">
-        <label for="preventivoTitolo">Cliente / Titolo:</label>
-        <input type="text" id="preventivoTitolo" placeholder="Es. Mario Rossi – Via Roma 1" class="titolo-input" autocomplete="off"/>
-      </div>
-    </div>
-
-    <!-- Selezione articolo -->
-    <div class="card">
-      <h2>🔍 Seleziona Articolo</h2>
-      <div class="search-add-row">
-        <input type="text" id="searchListino" placeholder="Cerca codice o descrizione…" class="search-input"/>
-        <select id="listinoSelect"></select>
-        <button class="btn-primary" id="btnAddFromListino">➕ Aggiungi</button>
-      </div>
-      <p class="muted small" id="listinoCount"></p>
-      <p class="muted small" id="dispHint" style="display:none"></p>
-      <details class="manual-add">
-        <summary>✏️ Aggiungi manualmente</summary>
-        <div class="manual-form">
-          <input type="text" id="manCodice" placeholder="Codice"/>
-          <input type="text" id="manDescrizione" placeholder="Descrizione"/>
-          <input type="text" id="manPrezzo" placeholder="Prezzo lordo €" inputmode="decimal"/>
-          <input type="text" id="manTrasporto" placeholder="Trasporto €" inputmode="decimal"/>
-          <input type="text" id="manInstallazione" placeholder="Installazione €" inputmode="decimal"/>
-          <button class="btn-sm" id="btnAddManual">➕ Aggiungi</button>
-        </div>
-      </details>
-    </div>
-
-    <!-- Opzioni Smart -->
-    <div class="card smart-card">
-      <h3>⚙️ Opzioni Preventivo</h3>
-      <div class="options-grid">
-        <label class="toggle-label"><input type="checkbox" id="toggleSmartMode"/> Modalità Cliente</label>
-        <label class="toggle-label"><input type="checkbox" id="toggleShowVAT"/> Mostra IVA</label>
-        <label class="toggle-label"><input type="checkbox" id="toggleHideVenduto" checked/> Ometti Venduto</label>
-        <label class="toggle-label"><input type="checkbox" id="toggleHideDiff" checked/> Ometti Diff.</label>
-        <label class="toggle-label"><input type="checkbox" id="toggleHideDiscounts" checked/> Ometti sconti nel report</label>
-        <label class="toggle-label"><input type="checkbox" id="toggleShowClientDiscount"/> Modo Sconto Cliente</label>
-        <label class="toggle-label"><input type="checkbox" id="toggleAutoCosti" checked/> Costi auto da listino</label>
-      </div>
-      <div class="vat-row">
-        <label for="vatRate">IVA %</label>
-        <input type="text" id="vatRate" value="22" inputmode="decimal" class="vat-input"/>
-      </div>
-      <div class="eq-discount">Sc. equiv. cliente: <strong id="smartEquivalentDiscount">—</strong></div>
-    </div>
-
-    <!-- Totali -->
-    <div class="card totali-card" id="totaliCard" style="display:none">
-      <div id="totaleGenerale"></div>
-    </div>
-
-    <!-- Tabella articoli -->
-    <div class="card table-card">
-      <div class="table-scroll">
-        <table id="articoli-table">
-          <thead><tr>
-            <th data-col="codice">Codice</th>
-            <th data-col="descrizione">Descrizione</th>
-            <th data-col="dispBadge" title="Disponibilità">Disp.</th>
-            <th data-col="prezzoLordo">P.Lordo</th>
-            <th data-col="sconto1">Sc.1%</th>
-            <th data-col="sconto2">Sc.2%</th>
-            <th data-col="scontoCliente">Sc.Cli%</th>
-            <th data-col="margine">Marg.%</th>
-            <th data-col="totaleNetto">Netto/cad</th>
-            <th data-col="trasporto">Trasp.</th>
-            <th data-col="installazione">Inst.</th>
-            <th data-col="qta">Qtà</th>
-            <th data-col="granTot">Tot.</th>
-            <th data-col="venduto">Vend.€</th>
-            <th data-col="diff">Diff.</th>
-            <th data-col="azioni">Az.</th>
-          </tr></thead>
-          <tbody id="articoliBody"></tbody>
-        </table>
-      </div>
-      <p class="muted small" id="emptyMsg">Nessun articolo. Cerca e aggiungi dal listino.</p>
-    </div>
-
-    <!-- Export -->
-    <div class="card">
-      <h3>📤 Esporta Preventivo</h3>
-      <div class="export-grid">
-        <button class="btn-export" id="btnWA">💬 WhatsApp</button>
-        <button class="btn-export" id="btnTXT">📄 TXT</button>
-        <button class="btn-export btn-secondary" id="btnWANoMarg">💬 WA (no marg.)</button>
-        <button class="btn-export btn-secondary" id="btnTXTNoMarg">📄 TXT (no marg.)</button>
-        <button class="btn-export btn-accent" id="btnCopyClip">📋 Copia</button>
-        <button class="btn-export btn-danger-soft" id="btnClearAll">🗑️ Svuota</button>
-      </div>
-      <pre class="report-preview" id="reportPreview" style="display:none"></pre>
-    </div>
-  </section>
-
-  <!-- ══════════════ TAB TRASPORTO ══════════════ -->
-  <section id="tab-trasporto" class="tab-panel">
-
-    <div class="card tran-info-card">
-      <h2>🚚 Calcolo Costo Trasporto</h2>
-      <p class="muted">Dati da <strong>alessandropezzali.it/Trasporti-Use-Friendly</strong> — calcolo automatico integrato.<br>
-      Calcolo automatico basato sulle tariffe ufficiali.</p>
-      <div id="tranDataStatus" class="stats-bar" style="display:none"></div>
-      <p id="tranDataError" class="error" style="display:none"></p>
-    </div>
-
-    <div class="card">
-      <h3>⚙️ Parametri Spedizione</h3>
-      <div class="tran-grid">
-
-        <label class="field-tran">
-          <span>Servizio</span>
-          <select id="tranService">
-            <option value="PALLET">🏗️ Bancale (PALLET)</option>
-            <option value="GROUPAGE">📦 Groupage / Parziale</option>
-          </select>
-          <div class="hint">Macchine (equilibratrici, ponti…) → tipicamente Bancale</div>
-        </label>
-
-        <label class="field-tran">
-          <span>Regione</span>
-          <select id="tranRegion"></select>
-        </label>
-
-        <label class="field-tran" id="tranProvinceField">
-          <span>Provincia (Groupage)</span>
-          <select id="tranProvince"></select>
-        </label>
-
-        <!-- PALLET fields -->
-        <label class="field-tran" id="tranPalletTypeField">
-          <span>Taglia bancale</span>
-          <select id="tranPalletType"></select>
-          <div class="hint">Seleziona dall'articolo o scegli manualmente</div>
-        </label>
-
-        <label class="field-tran" id="tranQtyField">
-          <span>Quantità bancali</span>
-          <input type="number" id="tranQty" min="1" step="1" value="1" inputmode="numeric"/>
-        </label>
-
-        <!-- GROUPAGE fields -->
-        <label class="field-tran" id="tranLmField">
-          <span>Metri lineari</span>
-          <input type="number" id="tranLm" min="0" step="0.1" value="0" inputmode="decimal"/>
-        </label>
-
-        <label class="field-tran" id="tranQuintaliField">
-          <span>Quintali</span>
-          <input type="number" id="tranQuintali" min="0" step="0.5" value="0" inputmode="decimal"/>
-        </label>
-
-        <label class="field-tran" id="tranPalletCountField">
-          <span>N° bancali (Groupage)</span>
-          <input type="number" id="tranPalletCount" min="0" step="1" value="0" inputmode="numeric"/>
-        </label>
-
-        <!-- Extra options -->
-        <label class="field-tran">
-          <span>Km oltre capoluogo</span>
-          <input type="number" id="tranKmOver" min="0" step="1" value="0" inputmode="numeric"/>
-        </label>
-
-        <label class="field-tran">
-          <span>Opzioni</span>
-          <div class="tran-checks">
-            <label><input type="checkbox" id="tranDisagiata"/> Disagiata / ZTL / isole</label>
-            <label><input type="checkbox" id="tranPreavviso"/> Preavviso telefonico</label>
-            <label><input type="checkbox" id="tranAssicurazione"/> Assicurazione (3%)</label>
-            <label><input type="checkbox" id="tranSponda"/> Sponda (se prevista)</label>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PROA</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1565c0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="apple-touch-icon" href="icon/icon-192.png" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <div class="logo-wrap">
+          <img
+            src="icon/icon-192.png"
+            alt="Logo"
+            class="logo"
+            onerror="this.style.display = 'none'"
+          />
+          <div>
+            <h1>PROA</h1>
+            <p class="tagline">Preventivi · Ordini · Costi Trasporto</p>
           </div>
-        </label>
-
-        <label class="field-tran">
-          <span>Note extra</span>
-          <input type="text" id="tranNoteExtra" placeholder="Es. piano rialzato, consegna mattina…"/>
-        </label>
-
-      </div><!-- .tran-grid -->
-
-      <!-- Collegamento articoli dal Preventivo -->
-      <div class="tran-link-box" id="tranLinkBox">
-        <div class="tran-link-title">🔗 Collega articoli dal Preventivo</div>
-
-        <!-- Modalità: singolo o multi -->
-        <div class="tran-mode-row">
-          <label class="toggle-label">
-            <input type="radio" name="tranMode" id="tranModeSingle" value="single" checked/>
-            <span>Articolo singolo</span>
-          </label>
-          <label class="toggle-label">
-            <input type="radio" name="tranMode" id="tranModeMulti" value="multi"/>
-            <span>Combinazione più articoli (stesso bancale)</span>
-          </label>
         </div>
+        <button class="btn-icon" id="btnTheme" title="Tema" aria-label="Cambia tema">🌙</button>
+      </div>
+    </header>
 
-        <!-- Singolo -->
-        <div id="tranSingleSection">
-          <div class="tran-link-row">
-            <select id="tranLinkArticle">
-              <option value="">— Seleziona articolo dal preventivo —</option>
+    <main>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="listino" role="tab">📋 Listino</button>
+        <button class="tab" data-tab="disponibilita" role="tab">📦 Disponib.</button>
+        <button class="tab" data-tab="preventivo" role="tab">🧾 Preventivo</button>
+        <button class="tab" data-tab="trasporto" role="tab">🚚 Trasporto</button>
+      </nav>
+
+      <!-- ══════════════ TAB LISTINO ══════════════ -->
+      <section id="tab-listino" class="tab-panel active">
+        <div class="card">
+          <h2>📋 Listino Prezzi (CSV)</h2>
+          <p class="muted">
+            Colonne: <code>Codice;Descrizione;PrezzoLordo;CostoTrasporto;CostoInstallazione</code>
+          </p>
+          <div class="upload-row">
+            <label class="upload-btn" for="csvFileInput">
+              📂 Seleziona CSV
+              <input type="file" id="csvFileInput" accept=".csv,.txt" style="display: none" />
+            </label>
+            <span id="csvFileName" class="muted small">Nessun file</span>
+          </div>
+          <p id="csvError" class="error" style="display: none"></p>
+          <div class="memory-bar">
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleRememberCSV" checked /> Ricorda listino</label
+            >
+            <div class="btn-row">
+              <button class="btn-sm" id="btnLoadSavedCSV">⬆️ Carica salvato</button>
+              <button class="btn-sm btn-danger" id="btnClearSavedCSV">🗑️ Cancella</button>
+            </div>
+            <p id="savedCsvInfo" class="muted small">Nessun listino salvato.</p>
+          </div>
+          <div id="listinoStats" class="stats-bar" style="display: none">
+            <span id="statArticoli">0 articoli</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ TAB DISPONIBILITÀ ══════════════ -->
+      <section id="tab-disponibilita" class="tab-panel">
+        <div class="card">
+          <h2>📦 Situazione Settimanale (XLSX / CSV)</h2>
+          <div class="upload-row">
+            <label class="upload-btn" for="xlsxFileInput">
+              📂 Seleziona XLSX / CSV
+              <input
+                type="file"
+                id="xlsxFileInput"
+                accept=".xlsx,.xls,.csv"
+                style="display: none"
+              />
+            </label>
+            <span id="xlsxFileName" class="muted small">Nessun file</span>
+          </div>
+          <div class="memory-bar">
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleRememberXLSX" checked /> Ricorda situazione</label
+            >
+            <div class="btn-row">
+              <button class="btn-sm" id="btnLoadSavedXLSX">⬆️ Carica salvata</button>
+              <button class="btn-sm btn-danger" id="btnClearSavedXLSX">🗑️ Cancella</button>
+            </div>
+            <p id="savedXlsxInfo" class="muted small">Nessuna situazione salvata.</p>
+          </div>
+          <p id="xlsxError" class="error" style="display: none">❌ Errore caricamento.</p>
+        </div>
+        <div class="card" id="dispFilters" style="display: none">
+          <div class="filter-row">
+            <input type="text" id="searchDisp" placeholder="🔍 Cerca…" class="search-input" />
+            <select id="filterDisp" class="select-sm">
+              <option value="all">Tutti</option>
+              <option value="available">✅ Disponibili</option>
+              <option value="zero">⚠️ Esauriti</option>
+              <option value="arriving">🚚 In arrivo</option>
+              <option value="noted">📝 Con note</option>
             </select>
-            <button class="btn-sm" id="btnTranApplyArticle">🔄 Ricarica dati articolo</button>
+            <button class="btn-sm" id="btnExportDisp">📥 Esporta CSV</button>
+          </div>
+          <p class="muted small" id="dispCount"></p>
+        </div>
+        <div class="card table-card" id="dispTableWrap" style="display: none">
+          <div class="table-scroll">
+            <table id="dispTable">
+              <thead>
+                <tr>
+                  <th>Codice</th>
+                  <th>Descrizione</th>
+                  <th class="num">Disp.</th>
+                  <th class="num">S15</th>
+                  <th class="num">S18</th>
+                  <th class="num">Maggio</th>
+                  <th class="num">Giugno</th>
+                  <th>Note</th>
+                  <th>Prenotazioni</th>
+                  <th>Info</th>
+                </tr>
+              </thead>
+              <tbody id="dispBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ TAB PREVENTIVO ══════════════ -->
+      <section id="tab-preventivo" class="tab-panel">
+        <!-- Titolo -->
+        <div class="card">
+          <h2>🧾 Preventivo</h2>
+          <div class="titolo-row">
+            <label for="preventivoTitolo">Cliente / Titolo:</label>
+            <input
+              type="text"
+              id="preventivoTitolo"
+              placeholder="Es. Mario Rossi – Via Roma 1"
+              class="titolo-input"
+              autocomplete="off"
+            />
           </div>
         </div>
 
-        <!-- Multi -->
-        <div id="tranMultiSection" style="display:none">
-          <p class="hint">Seleziona gli articoli che vanno sulla <strong>stessa spedizione</strong>. L'app cerca la combinazione nel listino trasporti e suggerisce la taglia bancale corretta.</p>
-          <div id="tranMultiCheckList" class="tran-multi-list"></div>
-          <div class="tran-link-row" style="margin-top:8px">
-            <button class="btn-sm" id="btnTranApplyMulti">🔍 Cerca combinazione</button>
+        <!-- Selezione articolo -->
+        <div class="card">
+          <h2>🔍 Seleziona Articolo</h2>
+          <div class="search-add-row">
+            <input
+              type="text"
+              id="searchListino"
+              placeholder="Cerca codice o descrizione…"
+              class="search-input"
+            />
+            <select id="listinoSelect"></select>
+            <button class="btn-primary" id="btnAddFromListino">➕ Aggiungi</button>
           </div>
-          <!-- Risultato ricerca combinazione -->
-          <div id="tranComboResult" style="display:none" class="tran-combo-result">
-            <div class="tran-combo-title" id="tranComboTitle"></div>
-            <div id="tranComboOptions" class="tran-combo-options"></div>
-            <div class="tran-combo-manual" id="tranComboManual" style="display:none">
-              <label class="field-tran">
-                <span>Seleziona taglia bancale manualmente</span>
-                <select id="tranComboPalletType">
-                  <option value="">— Scegli taglia —</option>
-                </select>
+          <p class="muted small" id="listinoCount"></p>
+          <p class="muted small" id="dispHint" style="display: none"></p>
+          <details class="manual-add">
+            <summary>✏️ Aggiungi manualmente</summary>
+            <div class="manual-form">
+              <input type="text" id="manCodice" placeholder="Codice" />
+              <input type="text" id="manDescrizione" placeholder="Descrizione" />
+              <input type="text" id="manPrezzo" placeholder="Prezzo lordo €" inputmode="decimal" />
+              <input type="text" id="manTrasporto" placeholder="Trasporto €" inputmode="decimal" />
+              <input
+                type="text"
+                id="manInstallazione"
+                placeholder="Installazione €"
+                inputmode="decimal"
+              />
+              <button class="btn-sm" id="btnAddManual">➕ Aggiungi</button>
+            </div>
+          </details>
+        </div>
+
+        <!-- Opzioni Smart -->
+        <div class="card smart-card">
+          <h3>⚙️ Opzioni Preventivo</h3>
+          <div class="options-grid">
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleSmartMode" /> Modalità Cliente</label
+            >
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleShowVAT" /> Mostra IVA</label
+            >
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleHideVenduto" checked /> Ometti Venduto</label
+            >
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleHideDiff" checked /> Ometti Diff.</label
+            >
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleHideDiscounts" checked /> Ometti sconti nel
+              report</label
+            >
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleShowClientDiscount" /> Modo Sconto Cliente</label
+            >
+            <label class="toggle-label"
+              ><input type="checkbox" id="toggleAutoCosti" checked /> Costi auto da listino</label
+            >
+          </div>
+          <div class="vat-row">
+            <label for="vatRate">IVA %</label>
+            <input type="text" id="vatRate" value="22" inputmode="decimal" class="vat-input" />
+          </div>
+          <div class="eq-discount">
+            Sc. equiv. cliente: <strong id="smartEquivalentDiscount">—</strong>
+          </div>
+        </div>
+
+        <!-- Totali -->
+        <div class="card totali-card" id="totaliCard" style="display: none">
+          <div id="totaleGenerale"></div>
+        </div>
+
+        <!-- Tabella articoli -->
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table id="articoli-table">
+              <thead>
+                <tr>
+                  <th data-col="codice">Codice</th>
+                  <th data-col="descrizione">Descrizione</th>
+                  <th data-col="dispBadge" title="Disponibilità">Disp.</th>
+                  <th data-col="prezzoLordo">P.Lordo</th>
+                  <th data-col="sconto1">Sc.1%</th>
+                  <th data-col="sconto2">Sc.2%</th>
+                  <th data-col="scontoCliente">Sc.Cli%</th>
+                  <th data-col="margine">Marg.%</th>
+                  <th data-col="totaleNetto">Netto/cad</th>
+                  <th data-col="trasporto">Trasp.</th>
+                  <th data-col="installazione">Inst.</th>
+                  <th data-col="qta">Qtà</th>
+                  <th data-col="granTot">Tot.</th>
+                  <th data-col="venduto">Vend.€</th>
+                  <th data-col="diff">Diff.</th>
+                  <th data-col="azioni">Az.</th>
+                </tr>
+              </thead>
+              <tbody id="articoliBody"></tbody>
+            </table>
+          </div>
+          <p class="muted small" id="emptyMsg">Nessun articolo. Cerca e aggiungi dal listino.</p>
+        </div>
+
+        <!-- Export -->
+        <div class="card">
+          <h3>📤 Esporta Preventivo</h3>
+          <div class="export-grid">
+            <button class="btn-export" id="btnWA">💬 WhatsApp</button>
+            <button class="btn-export" id="btnTXT">📄 TXT</button>
+            <button class="btn-export btn-secondary" id="btnWANoMarg">💬 WA (no marg.)</button>
+            <button class="btn-export btn-secondary" id="btnTXTNoMarg">📄 TXT (no marg.)</button>
+            <button class="btn-export btn-accent" id="btnCopyClip">📋 Copia</button>
+            <button class="btn-export btn-danger-soft" id="btnClearAll">🗑️ Svuota</button>
+          </div>
+          <pre class="report-preview" id="reportPreview" style="display: none"></pre>
+        </div>
+      </section>
+
+      <!-- ══════════════ TAB TRASPORTO ══════════════ -->
+      <section id="tab-trasporto" class="tab-panel">
+        <div class="card tran-info-card">
+          <h2>🚚 Calcolo Costo Trasporto</h2>
+          <p class="muted">
+            Dati da <strong>alessandropezzali.it/Trasporti-Use-Friendly</strong> — calcolo
+            automatico integrato.<br />
+            Calcolo automatico basato sulle tariffe ufficiali.
+          </p>
+          <div id="tranDataStatus" class="stats-bar" style="display: none"></div>
+          <p id="tranDataError" class="error" style="display: none"></p>
+        </div>
+
+        <div class="card">
+          <h3>⚙️ Parametri Spedizione</h3>
+          <div class="tran-grid">
+            <label class="field-tran">
+              <span>Servizio</span>
+              <select id="tranService">
+                <option value="PALLET">🏗️ Bancale (PALLET)</option>
+                <option value="GROUPAGE">📦 Groupage / Parziale</option>
+              </select>
+              <div class="hint">Macchine (equilibratrici, ponti…) → tipicamente Bancale</div>
+            </label>
+
+            <label class="field-tran">
+              <span>Regione</span>
+              <select id="tranRegion"></select>
+            </label>
+
+            <label class="field-tran" id="tranProvinceField">
+              <span>Provincia (Groupage)</span>
+              <select id="tranProvince"></select>
+            </label>
+
+            <!-- PALLET fields -->
+            <label class="field-tran" id="tranPalletTypeField">
+              <span>Taglia bancale</span>
+              <select id="tranPalletType"></select>
+              <div class="hint">Seleziona dall'articolo o scegli manualmente</div>
+            </label>
+
+            <label class="field-tran" id="tranQtyField">
+              <span>Quantità bancali</span>
+              <input type="number" id="tranQty" min="1" step="1" value="1" inputmode="numeric" />
+            </label>
+
+            <!-- GROUPAGE fields -->
+            <label class="field-tran" id="tranLmField">
+              <span>Metri lineari</span>
+              <input type="number" id="tranLm" min="0" step="0.1" value="0" inputmode="decimal" />
+            </label>
+
+            <label class="field-tran" id="tranQuintaliField">
+              <span>Quintali</span>
+              <input
+                type="number"
+                id="tranQuintali"
+                min="0"
+                step="0.5"
+                value="0"
+                inputmode="decimal"
+              />
+            </label>
+
+            <label class="field-tran" id="tranPalletCountField">
+              <span>N° bancali (Groupage)</span>
+              <input
+                type="number"
+                id="tranPalletCount"
+                min="0"
+                step="1"
+                value="0"
+                inputmode="numeric"
+              />
+            </label>
+
+            <!-- Extra options -->
+            <label class="field-tran">
+              <span>Km oltre capoluogo</span>
+              <input type="number" id="tranKmOver" min="0" step="1" value="0" inputmode="numeric" />
+            </label>
+
+            <label class="field-tran">
+              <span>Opzioni</span>
+              <div class="tran-checks">
+                <label><input type="checkbox" id="tranDisagiata" /> Disagiata / ZTL / isole</label>
+                <label><input type="checkbox" id="tranPreavviso" /> Preavviso telefonico</label>
+                <label><input type="checkbox" id="tranAssicurazione" /> Assicurazione (3%)</label>
+                <label><input type="checkbox" id="tranSponda" /> Sponda (se prevista)</label>
+              </div>
+            </label>
+
+            <label class="field-tran">
+              <span>Note extra</span>
+              <input
+                type="text"
+                id="tranNoteExtra"
+                placeholder="Es. piano rialzato, consegna mattina…"
+              />
+            </label>
+          </div>
+          <!-- .tran-grid -->
+
+          <!-- Collegamento articoli dal Preventivo -->
+          <div class="tran-link-box" id="tranLinkBox">
+            <div class="tran-link-title">🔗 Collega articoli dal Preventivo</div>
+
+            <!-- Modalità: singolo o multi -->
+            <div class="tran-mode-row">
+              <label class="toggle-label">
+                <input type="radio" name="tranMode" id="tranModeSingle" value="single" checked />
+                <span>Articolo singolo</span>
               </label>
-              <button class="btn-sm" id="btnTranApplyCombo">Applica taglia selezionata</button>
+              <label class="toggle-label">
+                <input type="radio" name="tranMode" id="tranModeMulti" value="multi" />
+                <span>Combinazione più articoli (stesso bancale)</span>
+              </label>
+            </div>
+
+            <!-- Singolo -->
+            <div id="tranSingleSection">
+              <div class="tran-link-row">
+                <select id="tranLinkArticle">
+                  <option value="">— Seleziona articolo dal preventivo —</option>
+                </select>
+                <button class="btn-sm" id="btnTranApplyArticle">🔄 Ricarica dati articolo</button>
+              </div>
+            </div>
+
+            <!-- Multi -->
+            <div id="tranMultiSection" style="display: none">
+              <p class="hint">
+                Seleziona gli articoli che vanno sulla <strong>stessa spedizione</strong>. L'app
+                cerca la combinazione nel listino trasporti e suggerisce la taglia bancale corretta.
+              </p>
+              <div id="tranMultiCheckList" class="tran-multi-list"></div>
+              <div class="tran-link-row" style="margin-top: 8px">
+                <button class="btn-sm" id="btnTranApplyMulti">🔍 Cerca combinazione</button>
+              </div>
+              <!-- Risultato ricerca combinazione -->
+              <div id="tranComboResult" style="display: none" class="tran-combo-result">
+                <div class="tran-combo-title" id="tranComboTitle"></div>
+                <div id="tranComboOptions" class="tran-combo-options"></div>
+                <div class="tran-combo-manual" id="tranComboManual" style="display: none">
+                  <label class="field-tran">
+                    <span>Seleziona taglia bancale manualmente</span>
+                    <select id="tranComboPalletType">
+                      <option value="">— Scegli taglia —</option>
+                    </select>
+                  </label>
+                  <button class="btn-sm" id="btnTranApplyCombo">Applica taglia selezionata</button>
+                </div>
+              </div>
+            </div>
+
+            <p class="tran-link-info" id="tranLinkInfo"></p>
+          </div>
+
+          <div class="actions">
+            <button class="btn-primary" id="btnTranCalc">🚚 Calcola Trasporto</button>
+            <button class="btn-sm" id="btnTranAddToPreventivo" disabled>
+              ➕ Aggiungi al Preventivo
+            </button>
+          </div>
+        </div>
+        <!-- .card -->
+
+        <!-- Risultato trasporto -->
+        <div class="card" id="tranResultCard" style="display: none">
+          <h3>📊 Risultato</h3>
+          <div class="tran-result-grid">
+            <div class="tran-cost-box">
+              <div class="muted small">Costo preventivato</div>
+              <div class="tran-cost-value" id="tranCostValue">—</div>
+              <div class="muted small" id="tranCostBase"></div>
+            </div>
+            <div>
+              <div class="muted small">Riepilogo</div>
+              <pre id="tranSummary" class="tran-summary-pre"></pre>
             </div>
           </div>
+          <div id="tranAlerts" class="tran-alerts"></div>
+          <div class="btn-row" style="margin-top: 12px">
+            <button class="btn-sm" id="btnTranWA">💬 WA Trasporto</button>
+            <button class="btn-sm" id="btnTranCopy">📋 Copia</button>
+          </div>
         </div>
 
-        <p class="tran-link-info" id="tranLinkInfo"></p>
-      </div>
-
-      <div class="actions">
-        <button class="btn-primary" id="btnTranCalc">🚚 Calcola Trasporto</button>
-        <button class="btn-sm" id="btnTranAddToPreventivo" disabled>➕ Aggiungi al Preventivo</button>
-      </div>
-    </div><!-- .card -->
-
-    <!-- Risultato trasporto -->
-    <div class="card" id="tranResultCard" style="display:none">
-      <h3>📊 Risultato</h3>
-      <div class="tran-result-grid">
-        <div class="tran-cost-box">
-          <div class="muted small">Costo preventivato</div>
-          <div class="tran-cost-value" id="tranCostValue">—</div>
-          <div class="muted small" id="tranCostBase"></div>
+        <!-- Diagnostica trasporto -->
+        <div class="card">
+          <h3>🔧 Dati tariffe caricati</h3>
+          <div class="small" id="tranDebug">—</div>
         </div>
-        <div>
-          <div class="muted small">Riepilogo</div>
-          <pre id="tranSummary" class="tran-summary-pre"></pre>
-        </div>
-      </div>
-      <div id="tranAlerts" class="tran-alerts"></div>
-      <div class="btn-row" style="margin-top:12px">
-        <button class="btn-sm" id="btnTranWA">💬 WA Trasporto</button>
-        <button class="btn-sm" id="btnTranCopy">📋 Copia</button>
-      </div>
-    </div>
+      </section>
+    </main>
 
-    <!-- Diagnostica trasporto -->
-    <div class="card">
-      <h3>🔧 Dati tariffe caricati</h3>
-      <div class="small" id="tranDebug">—</div>
-    </div>
+    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
 
-  </section>
-
-</main>
-
-<div id="toast" class="toast" role="alert" aria-live="polite"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
-<script src="js/app.js" defer></script>
-</body>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"
+      defer
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+      defer
+    ></script>
+    <script src="js/app.js" defer></script>
+  </body>
 </html>

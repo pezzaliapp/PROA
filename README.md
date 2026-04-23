@@ -32,17 +32,22 @@ PROA/
 ## Funzionalità per tab
 
 ### 📋 Tab Listino
+
 Carica il listino prezzi in formato CSV con le colonne:
+
 ```
 Codice;Descrizione;PrezzoLordo;CostoTrasporto;CostoInstallazione
 ```
+
 - Separatore auto-rilevato (`;` o `,`)
 - Encoding UTF-8 (con BOM supportato)
 - Memoria persistente in IndexedDB — il listino sopravvive alla chiusura del browser
 - Contatore articoli caricati
 
 ### 📦 Tab Disponibilità
+
 Carica la **Situazione Settimanale** in formato `.xlsx` o `.csv`:
+
 - Parser auto-rileva le righe header (struttura a 3 righe come da file standard)
 - Colonne lette: Codice, Descrizione, Disponibilità, Arrivi (Sett.15 / Sett.18 / Maggio / Giugno), Note, Prenotazioni
 - Filtri rapidi: tutti / disponibili / esauriti / in arrivo / con note
@@ -50,6 +55,7 @@ Carica la **Situazione Settimanale** in formato `.xlsx` o `.csv`:
 - Memoria persistente (IndexedDB)
 
 ### 🧾 Tab Preventivo
+
 - Ricerca articolo dal listino con badge disponibilità in tempo reale
 - Aggiunta manuale articoli
 - Titolo / Cliente configurabile (incluso nel report)
@@ -62,30 +68,35 @@ Carica la **Situazione Settimanale** in formato `.xlsx` o `.csv`:
 - Export: WhatsApp, TXT, Copia negli appunti (versioni con e senza margine)
 
 ### 🚚 Tab Trasporto
+
 Calcolo automatico costi trasporto con gli stessi dati e la stessa logica dell'app [Trasporti-Use-Friendly](https://www.alessandropezzali.it/Trasporti-Use-Friendly/).
 
 #### Servizio PALLET
+
 - Tariffa per **Regione** × **Tipo bancale** (22 taglie: MINI → MEGA+30%)
 - 20 regioni italiane coperte
 - Split automatico se quantità > 5 (massimo bancali per spedizione)
 - Preavviso telefonico: +€2/spedizione
 
 #### Servizio GROUPAGE
+
 - Tariffa per **Provincia** (49 gruppi province coperti)
 - Scaglioni su: Metri lineari / Quintali / N° bancali
 - Selezione tariffa: `max` tra i parametri forniti (configurabile via JSON → `selection_mode`)
 - Overflow oltre l'ultima fascia: stima a cap + avviso
 
 #### Opzioni comuni
-| Opzione | Effetto |
-|---|---|
+
+| Opzione              | Effetto                                                    |
+| -------------------- | ---------------------------------------------------------- |
 | Preavviso telefonico | +€2/spedizione (PALLET) o fisso (GROUPAGE, se configurato) |
-| Assicurazione | +3% sul totale |
-| Sponda | Aggiunta fisso se configurata nel JSON |
-| Km oltre capoluogo | Info + eventuale supplemento (configurabile) |
-| Disagiata / ZTL | Avviso + eventuale supplemento (configurabile) |
+| Assicurazione        | +3% sul totale                                             |
+| Sponda               | Aggiunta fisso se configurata nel JSON                     |
+| Km oltre capoluogo   | Info + eventuale supplemento (configurabile)               |
+| Disagiata / ZTL      | Avviso + eventuale supplemento (configurabile)             |
 
 #### Collegamento automatico con il Preventivo
+
 1. Aggiungi articoli nel tab Preventivo
 2. Vai al tab Trasporto → sezione **"Collega articolo dal preventivo"**
 3. Seleziona l'articolo e clicca **Applica dati** → l'app imposta automaticamente:
@@ -106,6 +117,7 @@ Calcolo automatico costi trasporto con gli stessi dati e la stessa logica dell'a
 I file JSON nella cartella `/data/` sono gli stessi dell'app Trasporti-Use-Friendly e possono essere aggiornati indipendentemente dal codice.
 
 ### `data/pallet_rates_by_region.json`
+
 ```json
 {
   "meta": {
@@ -123,6 +135,7 @@ I file JSON nella cartella `/data/` sono gli stessi dell'app Trasporti-Use-Frien
 ```
 
 ### `data/groupage_rates.json`
+
 ```json
 {
   "meta": {
@@ -147,7 +160,9 @@ I file JSON nella cartella `/data/` sono gli stessi dell'app Trasporti-Use-Frien
 ```
 
 ### `data/articles.json`
+
 Elenco articoli con tipo bancale e regole di spedizione (stesso file dell'app Trasporti-Use-Friendly):
+
 ```json
 [
   {
@@ -173,7 +188,9 @@ Elenco articoli con tipo bancale e regole di spedizione (stesso file dell'app Tr
   }
 ]
 ```
+
 Campi rilevanti:
+
 - `pack.palletType` — taglia bancale (auto-fill nel calcolo PALLET)
 - `rules.forceService` — se `"GROUPAGE"`, forza automaticamente il servizio
 - `rules.groupageLm/groupageQuintali/groupagePalletCount` — parametri auto-fill per Groupage
@@ -181,12 +198,14 @@ Campi rilevanti:
 - `rules.forceQuote` — mostra avviso "quotazione/preventivo consigliato"
 
 ### `data/geo_provinces.json`
+
 ```json
 {
   "LOMBARDIA": ["MI", "BG", "BS", "CO", ...],
   ...
 }
 ```
+
 Usato per popolare la select Province in base alla Regione selezionata.
 
 ---
@@ -233,6 +252,7 @@ L'app sarà disponibile su `https://pezzaliapp.github.io/PROA/`
 ## Formato CSV Listino
 
 ### Colonne obbligatorie
+
 ```csv
 Codice;Descrizione;PrezzoLordo;CostoTrasporto;CostoInstallazione
 00100208;PUMA CE 1ph 230V;17000;390;320
@@ -240,6 +260,7 @@ Codice;Descrizione;PrezzoLordo;CostoTrasporto;CostoInstallazione
 ```
 
 ### Colonna opzionale PalletType (raccomandata)
+
 Aggiungendo la colonna `PalletType` al CSV, quando colleghi un articolo nel tab Trasporto la taglia bancale viene impostata **automaticamente**:
 
 ```csv
@@ -250,6 +271,7 @@ Codice;Descrizione;PrezzoLordo;CostoTrasporto;CostoInstallazione;PalletType
 ```
 
 Valori ammessi per `PalletType` (devono corrispondere esattamente alle chiavi del listino tariffe):
+
 ```
 MINI · QUARTER · QUARTER + 50% · HALF · HALF + 50%
 MEDIUM · MEDIUM + 10% · MEDIUM + 30% · MEDIUM + 80%
@@ -263,6 +285,7 @@ MEGA · MEGA + 10% · MEGA + 30%
 Se la colonna è assente o il valore non è riconosciuto, l'app mostra un avviso e la taglia va selezionata manualmente dal menu.
 
 ### Regole formato
+
 - Separatore: `;` (punto e virgola) oppure `,` (auto-rilevato)
 - Encoding: UTF-8 (anche con BOM)
 - Prima riga: intestazioni (obbligatorie, case-insensitive)
@@ -285,9 +308,11 @@ Se la colonna è assente o il valore non è riconosciuto, l'app mostra un avviso
 ## Licenza
 
 ### CSVXpressSmart (codice preventivi / disponibilità / UI)
+
 © Alessandro Pezzali – PezzaliAPP. Tutti i diritti riservati. Uso riservato all'autore.
 
 ### Motore di calcolo trasporti
+
 © Alessandro Pezzali – PezzaliAPP — portato da [Trasporti-Use-Friendly](https://www.alessandropezzali.it/Trasporti-Use-Friendly/). Uso riservato all'autore.
 
 Questo progetto **non è open source**. La disponibilità del codice non costituisce concessione di licenza.  
