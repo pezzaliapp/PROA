@@ -1091,3 +1091,39 @@ tr:hover td {
     transform: translateY(0);
   }
 }
+
+/* ─── FOCUS VISIBILE DA TASTIERA ─── */
+/* Applica l'outline solo alla navigazione da tastiera (:focus-visible),
+   così il click col mouse non mostra l'outline (migliore UX). Il colore
+   segue il tema tramite var(--tran). */
+:focus-visible {
+  outline: 2px solid var(--tran);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+button:focus-visible,
+.tab:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--tran);
+  outline-offset: 2px;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--tran);
+  outline-offset: 0;
+  /* L'input ha già un bordo; l'outline-offset 0 evita un doppio anello */
+}
+/* Label che wrappano checkbox/radio: highlight solo quando l'input
+   interno ha focus-visible (focus-within + :has non è universale,
+   usiamo un fallback con :has dove supportato). */
+.toggle-label:has(input:focus-visible) {
+  outline: 2px solid var(--tran);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Banner update: bottone Ricarica su sfondo --tran → outline bianco per contrasto */
+.update-banner button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
