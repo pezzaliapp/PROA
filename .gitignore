@@ -32,6 +32,3 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
-
-# Backup temporaneo Fase 2 — da rimuovere a fine modularizzazione
-js/app.js.backup
