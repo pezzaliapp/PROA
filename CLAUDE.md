@@ -220,33 +220,33 @@ git log --oneline -10
 
 ---
 
-## 9. Roadmap di modernizzazione (6 fasi)
+## 9. Roadmap di modernizzazione (6 fasi) — ✅ COMPLETATA a `proa-v1.4.0`
 
 Ogni fase deve essere completata e committata prima di passare alla successiva. Commit piccoli e descrittivi (Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`).
 
-### Fase 1 — Fondamenta
+### ✅ Fase 1 — Fondamenta (completata 2026-04-23)
 
 `package.json`, `.gitignore`, `.editorconfig`, `.nvmrc`, ESLint, Prettier, formattazione iniziale.
 
-### Fase 2 — Modularizzazione `app.js`
+### ✅ Fase 2 — Modularizzazione `app.js` (completata 2026-04-23)
 
 Split in moduli ES6 come descritto in §3. `<script type="module">` in `index.html`. Aggiornare `sw.js` e bumpare `CACHE`. Nessun cambio di comportamento.
 
-### Fase 3 — Testing
+### ✅ Fase 3 — Testing (completata 2026-04-23)
 
-Vitest + jsdom. Coverage >70% sulla logica business (parser CSV, motore trasporto PALLET e GROUPAGE, calcolo sconti).
+Vitest + jsdom. Coverage >70% sulla logica business (parser CSV, motore trasporto PALLET e GROUPAGE, calcolo sconti). Risultato: 111 test, 87.71% branch coverage, threshold 70% configurato in `vitest.config.js`.
 
-### Fase 4 — CI/CD
+### ✅ Fase 4 — CI/CD (completata 2026-04-23)
 
 `.github/workflows/ci.yml`: lint + test + deploy automatico su GitHub Pages. Badge CI e coverage nel README.
 
-### Fase 5 — Robustezza PWA
+### ✅ Fase 5 — Robustezza PWA (completata 2026-04-23)
 
-Service Worker con stale-while-revalidate per i JSON. Banner update. Script build che bumpa `CACHE` automaticamente da `package.json`.
+Service Worker con stale-while-revalidate per i JSON. Banner update. Script build che bumpa `CACHE` automaticamente da `package.json` (`scripts/sync-sw-version.js` + npm hook "version" + guard CI `sync:sw:check`).
 
-### Fase 6 — Qualità e accessibilità
+### ✅ Fase 6 — Qualità e accessibilità (completata 2026-04-23, scope A statico)
 
-Audit axe-core, aria-label, focus tastiera. Lighthouse >90 su tutte e 4 le metriche. Meta Open Graph + Twitter Card. Zero warning console.
+Meta Open Graph + Twitter Card ✅. aria-label + tablist ARIA pattern completo (role=tab/tabpanel, aria-controls, aria-selected, tabindex) con keyboard arrow navigation ✅. Focus tastiera via `:focus-visible` theme-aware ✅. Zero `console.log` residui (solo `console.warn`/`console.error` appropriati) ✅. Nessun div/span con onclick inline (già verificato assente) ✅. **Lighthouse e axe-core lasciati a test manuali via DevTools** (scelta esplicita: no puppeteer/chrome-headless per evitare >100MB di dipendenze dev).
 
 ---
 

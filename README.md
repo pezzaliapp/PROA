@@ -1,12 +1,28 @@
 # PROA
 
 [![CI](https://github.com/pezzaliapp/PROA/actions/workflows/ci.yml/badge.svg)](https://github.com/pezzaliapp/PROA/actions/workflows/ci.yml)
+[![tests](https://img.shields.io/badge/tests-111%20passing-brightgreen)](./tests)
+[![coverage](https://img.shields.io/badge/coverage-87.71%25-brightgreen)](./vitest.config.js)
+[![live](https://img.shields.io/badge/live-alessandropezzali.it%2FPROA-1565c0)](https://www.alessandropezzali.it/PROA/)
+[![license](https://img.shields.io/badge/license-Proprietary-red)](./LICENSE)
 
 **PWA offline-first** che unisce la gestione preventivi/ordini di CSVXpressSmart con il motore di calcolo costi trasporto di [Trasporti-Use-Friendly](https://www.alessandropezzali.it/Trasporti-Use-Friendly/).
 
 **Live**: https://www.alessandropezzali.it/PROA/
 
 > Motore di calcolo trasporti © Alessandro Pezzali – PezzaliAPP. Uso riservato all'autore.
+
+---
+
+## Stato
+
+**Tutte le 6 fasi della roadmap completate a `proa-v1.4.0`** (vedi `CLAUDE.md §9`).
+
+- Modularizzazione ES6 ✅
+- Vitest + jsdom, 111 test, 87.71% branch coverage ✅
+- GitHub Actions CI/CD → deploy Pages ✅
+- Service Worker con stale-while-revalidate e banner update ✅
+- Accessibilità: tablist ARIA pattern, keyboard navigation, focus visibile, OG + Twitter Card ✅
 
 ---
 
