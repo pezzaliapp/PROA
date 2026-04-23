@@ -1,5 +1,5 @@
-// PROA — Service Worker v1.3.0
-const CACHE = 'proa-v1.3.0';
+// PROA — Service Worker v1.4.0
+const CACHE = 'proa-v1.4.0';
 const ASSETS = [
   './',
   './index.html',

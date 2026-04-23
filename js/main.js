@@ -18,7 +18,7 @@ import { initTrasportoUI } from './modules/trasporto.js';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('sw.js?v=1.3.0');
+      const reg = await navigator.serviceWorker.register('sw.js?v=1.4.0');
       await reg.update().catch(() => {});
 
       // Se è già pronto un SW in waiting all'avvio → mostra subito il banner
