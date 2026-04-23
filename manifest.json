@@ -1,0 +1,15 @@
+{
+  "name": "CSVXpressSmart 2026 + Trasporti",
+  "short_name": "CSVXpress+Tran",
+  "description": "Preventivi, disponibilità e calcolo costi trasporto automatico.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#1565c0",
+  "lang": "it-IT",
+  "icons": [
+    { "src": "icon/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
