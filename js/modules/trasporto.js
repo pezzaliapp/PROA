@@ -181,13 +181,13 @@ function updateTranDebug() {
 // ══════════════ LOGICA CALCOLO ══════════════
 // Portata da app.js Trasporti-Use-Friendly
 
-function normalizeProvince(p) {
+export function normalizeProvince(p) {
   const x = (p || '').trim().toUpperCase();
   if (x === 'SU') return 'CI';
   return x;
 }
 
-function resolveGroupageProvinceKey(rawProvince) {
+export function resolveGroupageProvinceKey(rawProvince) {
   const province = normalizeProvince(rawProvince);
   if (!province || !TRAN.groupageRates?.provinces) return null;
   const provinces = TRAN.groupageRates.provinces;
@@ -235,7 +235,7 @@ function resolveGroupageProvinceKey(rawProvince) {
   return null;
 }
 
-function matchGroupageBracket(value, brackets) {
+export function matchGroupageBracket(value, brackets) {
   if (!Array.isArray(brackets) || brackets.length === 0) return { bracket: null, overflow: false };
   const bs = brackets.slice().sort((a, b) => (a.min ?? 0) - (b.min ?? 0));
   for (const b of bs) {
@@ -246,7 +246,7 @@ function matchGroupageBracket(value, brackets) {
   return { bracket: bs[bs.length - 1], overflow: true };
 }
 
-function applyKmAndDisagiata({ base, shipments, opts, rules, alerts, mode }) {
+export function applyKmAndDisagiata({ base, shipments, opts, rules, alerts, mode }) {
   const kmThreshold = TRAN.groupageRates?.meta?.km_threshold ?? 30;
   const kmSurcharge = TRAN.groupageRates?.meta?.km_surcharge_per_km ?? 0;
   const disFee = TRAN.groupageRates?.meta?.disagiata_surcharge ?? 0;
@@ -273,7 +273,7 @@ function applyKmAndDisagiata({ base, shipments, opts, rules, alerts, mode }) {
   return base;
 }
 
-function computePallet({ region, palletType, qty, opts }) {
+export function computePallet({ region, palletType, qty, opts }) {
   const rules = [];
   const alerts = [];
   if (!region) return { cost: null, rules: ['Manca regione'], alerts: ['Seleziona una regione.'] };
@@ -307,7 +307,7 @@ function computePallet({ region, palletType, qty, opts }) {
   return { cost: round2(base), rules, alerts };
 }
 
-function computeGroupage({ province, lm, quintali, palletCount, opts }) {
+export function computeGroupage({ province, lm, quintali, palletCount, opts }) {
   const rules = [];
   const alerts = [];
   if (!province) {

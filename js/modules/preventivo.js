@@ -24,7 +24,7 @@ import { refreshTranLinkSelect } from './trasporto.js';
 
 // ══════════════ CALCOLI ══════════════
 
-function computeRow(a) {
+export function computeRow(a) {
   const prezzoLordo = parseDec(a.prezzoLordo || 0);
   const qta = Math.max(1, parseInt(a.quantita || 1) || 1);
   const useClient = !!smartSettings.showClientDiscount && !a.__skipClient;

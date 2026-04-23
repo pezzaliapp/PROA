@@ -20,7 +20,7 @@ import { aggiornaBadgePreventivo } from './preventivo.js';
 
 // ══════════════ LISTINO CSV ══════════════
 
-function normalizeListino(rows) {
+export function normalizeListino(rows) {
   return rows
     .map((r) => {
       // PalletType: accetta vari nomi colonna (opzionale)
@@ -197,7 +197,7 @@ export function aggiornaListinoSelect() {
 
 // ══════════════ SITUAZIONE SETTIMANALE ══════════════
 
-function parseSituazioneRows(raw) {
+export function parseSituazioneRows(raw) {
   let startRow = 0;
   for (let i = 0; i < Math.min(raw.length, 6); i++) {
     const cell = String(raw[i]?.[0] ?? '').trim();
