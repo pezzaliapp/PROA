@@ -7,13 +7,16 @@
   },
   "parserOptions": {
     "ecmaVersion": 2022,
-    "sourceType": "script"
+    "sourceType": "module"
+  },
+  "globals": {
+    "Papa": "readonly",
+    "XLSX": "readonly"
   },
   "rules": {
-    "strict": ["error", "global"],
     "no-unused-vars": "warn",
     "prefer-const": "error",
-    "eqeqeq": "error",
+    "eqeqeq": ["error", "always", { "null": "ignore" }],
     "no-var": "error"
   }
 }
