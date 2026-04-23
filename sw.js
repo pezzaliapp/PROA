@@ -1,5 +1,5 @@
-// PROA — Service Worker v1.2.0
-const CACHE = 'proa-v1.2.0';
+// PROA — Service Worker v1.3.0
+const CACHE = 'proa-v1.3.0';
 const ASSETS = [
   './',
   './index.html',
@@ -36,7 +36,9 @@ self.addEventListener('install', (e) => {
           // asset non disponibile al primo install: continua
         }
       }
-      await self.skipWaiting();
+      // Nota: NO skipWaiting qui. Un nuovo SW resta in "waiting" finché
+      // il client (main.js) mostra il banner e l'utente clicca Ricarica,
+      // che triggera il message SKIP_WAITING gestito più in basso.
     })()
   );
 });

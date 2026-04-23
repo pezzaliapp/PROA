@@ -12,6 +12,17 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
+    <!-- ══════════════ BANNER AGGIORNAMENTO SW ══════════════ -->
+    <div id="updateBanner" class="update-banner" role="status" aria-live="polite" hidden>
+      <span class="update-banner-msg">🔄 Nuova versione di PROA disponibile</span>
+      <div class="update-banner-actions">
+        <button id="btnUpdateReload" class="btn-primary btn-sm" type="button">Ricarica</button>
+        <button id="btnUpdateDismiss" class="btn-icon" type="button" aria-label="Nascondi banner">
+          ✕
+        </button>
+      </div>
+    </div>
+
     <header>
       <div class="header-inner">
         <div class="logo-wrap">

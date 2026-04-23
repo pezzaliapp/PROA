@@ -1027,3 +1027,67 @@ tr:hover td {
   padding-top: 10px;
   border-top: 1px dashed var(--border);
 }
+
+/* ─── BANNER AGGIORNAMENTO SERVICE WORKER ─── */
+.update-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--tran);
+  color: #fff;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  animation: slideDownBanner 0.3s ease-out;
+  font-size: 0.95rem;
+}
+.update-banner[hidden] {
+  display: none;
+}
+.update-banner-msg {
+  font-weight: 600;
+}
+.update-banner-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.update-banner .btn-primary {
+  background: #fff;
+  color: var(--tran);
+  border: none;
+  font-weight: 600;
+}
+.update-banner .btn-primary:hover {
+  background: #f0f0f0;
+}
+.update-banner .btn-primary:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.update-banner .btn-icon {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.update-banner .btn-icon:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+@keyframes slideDownBanner {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
