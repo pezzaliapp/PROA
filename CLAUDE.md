@@ -162,7 +162,7 @@ Separatore `;` o `,` auto-rilevato. Encoding UTF-8 con BOM supportato. Header ca
 
 ## 5. Convenzioni di codice (rispettare sempre)
 
-- `'use strict'` in testa a ogni file JS
+- **ES Modules**: tutti i file in `js/` sono moduli ES6 (`import`/`export`). La modalità strict è **implicita** in ogni modulo ES — non è più necessario né corretto scrivere `'use strict'` in testa ai file. L'unica eccezione è `sw.js`, che è un classic script: se in futuro aggiungi altri script classici, aggiungi `'use strict'` in testa.
 - Commenti in italiano, stile `// ─── SEZIONE ───`
 - Nomi funzioni e variabili in italiano quando riferiti a concetti di dominio (`listino`, `articoliAggiunti`, `calcolaTrasporto`), in inglese per costrutti tecnici (`init`, `loadAssets`, `cache`)
 - Niente jQuery, niente lodash: DOM API native e metodi standard
